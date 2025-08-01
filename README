@@ -1,0 +1,16 @@
+# Minimal Webserver in Assembly (x86-64)
+This project is a learning exercise to understand how webservers work
+The source and inspiration come from:
+- https://pwn.college/ 
+- https://youtu.be/MpsDNv-I8i0?si=UBZxxZSMCHWHr5c8
+
+Tools I use:
+- gcc as a compiler and a linker 
+
+compiler: transforms x86-64 assembly (".s" files) into machine code (".o" object files)  
+linker: transforms ".o" files into an ELF binary (Executable and Linkable Format), which can be run by the Linux kernel 
+
+What is a webserver? 
+A webserver is a Software for servers to process HTTP(S) requests.
+
+
