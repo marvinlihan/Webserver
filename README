@@ -10,7 +10,26 @@ Tools I use:
 compiler: transforms x86-64 assembly (".s" files) into machine code (".o" object files)  
 linker: transforms ".o" files into an ELF binary (Executable and Linkable Format), which can be run by the Linux kernel 
 
+how I compiled: gcc -nostdlib -no-pie -o webserver webserver.s 
+
 What is a webserver? 
 A webserver is a Software for servers to process HTTP(S) requests.
 
+A webserver contains:
+- socket:
+	To connect to programms (client or Server) to communicate and reciepe / send data.
+	In C the syntax is "int socket(int domain, int type, int protocol);".
+	domain = to determine if IPv4 or IPv6
+	type = how to transport the data (SOCK_STREAM = TCP; SOCK_DGRAM = UDP)
+	protocole = determine which transport protocole
+- bind:
+- listen:
+- accept:
+- read:
+- write:
+- close:
+
+Somethink about Assmebly (x86-64):
+- register seqeunece: rax / rdi / rsi / rdx / r10 / r9 ...
+- rax-register for syscall-numbers (I found them at my laptop here: /usr/include/x86_64-linux-gnu/asm/unistd_64.h)
 
