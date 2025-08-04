@@ -16,6 +16,38 @@ _start:
 	mov rdx, 16			# length adress (16 bytes)
 	syscall
 
+	mov rax, 50			# syscall number for the listen syscall
+	mov rdi, r12			# socket_fd
+	mov rsi, 10			# how many connections at the same time -> 10 here magic number
+	syscall
+
+	mov rax, 43			# syscall number for the accept syscall
+	mov rdi, r12			# socket_fd
+	mov rsi, 0			# here both rsi/rdx are information about the client connecting which is optional
+	mov rdx, 0
+	syscall				# on sucess return a file descriptor
+
+	mov r13, rax			# which we need for read because it the file descriptor from accept
+
+	mov rax, 0			# syscall number for the read syscall -> read http request from client
+	mov rdi, r13			# fd from accept
+	lea rsi, [read_location]	# buffer
+	mov rdx, 512			# bytes to read
+	syscall
+
+	mov rax, 2			# syscall number for open syscall
+	lea rdi, [path_buffer]		# read path from the http request
+	mov rsi, 0			# 0 = o_RDONLY
+	mov rdx, 0			# mode not needed
+	syscall
+
+	mov r14, rax			# fd from open for read2
+
+	mov rax, 0			# syscall number for the read syscall -> now we want to read the content where the request leads
+	mov rdi, r14			# fd from open
+	lea rsi, [read_content]		# storage of content
+	mov rdx, 512			# bytes to read
+	syscall
 
 	mov rax, 60			# syscall for exit
 	mov rdi, 0
@@ -28,3 +60,11 @@ sockaddr:
    	.long 0x00000000     # 0.0.0.0 (INADDR_ANy)
     	.long 0x00000000     # padding
 
+read_location:			# storage for the http-request to find location
+	.space 512
+
+read_content:
+	.space 512		# storage to hold content of the content from the object which got opened
+
+path_buffer:
+	.asciz "index.html"

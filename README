@@ -29,8 +29,31 @@ A webserver contains:
 	sockaddr = adress to bind the socket
 	addrlen = lenght of adress in bytes
 - listen:
+	Marks socket to accept the incomming connection.
+	In C the syntax is "int listen(int sockfd, int backlog);".
+	sockfd = socket file descriptor
+	backlog = maximun amount of possibile connections
 - accept:
+	Accepts a new connection from a client.
+	In C the syntax is "int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);".
+	sockfd = listening socket
+	addr = store client's address (optional)
+	addrlen = length of address (optional)
 - read:
+	Reads the client's HTTP request to find the data the client wants.
+	In C the syntax is "ssize_t read(int fd, void *buf, size_t count);".
+	fd = file descriptor form accept syscall for client connection
+	buf = storage for request
+	count = maximum numbers of bytes to read
+- open:
+	Opens the file that was requested from client.
+	In C the syntax is "int open(const char *pathname, int flags, mode_t mode);".
+	pathname = file name 
+	flags = how to open file (permissions: O_RDONLY = read only ; O_WRONLY = write only ; ...)
+	mode = only for create a file for the description of the file condition
+- read:
+	Reads the content of the file that was opened.
+	Syntax same like before but storage is now used for content of file.
 - write:
 - close:
 
@@ -38,4 +61,3 @@ Somethink about Assembly (x86-64):
 - register seqeunece: rax / rdi / rsi / rdx / r10 / r9 ...
 - rax-register for syscall-numbers (I found them at my laptop here: /usr/include/x86_64-linux-gnu/asm/unistd_64.h)
 - register r12 - r15 used as tmp variables 
-
