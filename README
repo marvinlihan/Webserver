@@ -1,10 +1,10 @@
 # Minimal Webserver in Assembly (x86-64)
 This project is a learning exercise to understand how webservers work
-The source and inspiration come from:
+The source and inspiration comes from:
 - https://pwn.college/ 
 - https://youtu.be/MpsDNv-I8i0?si=UBZxxZSMCHWHr5c8
 
-Tools I use:
+Tools I used:
 - gcc as a compiler and a linker 
 
 compiler: transforms x86-64 assembly (".s" files) into machine code (".o" object files)  
@@ -13,7 +13,7 @@ linker: transforms ".o" files into an ELF binary (Executable and Linkable Format
 how I compiled: gcc -nostdlib -no-pie -o webserver webserver.s 
 
 What is a webserver? 
-A webserver is a Software for servers to process HTTP(S) requests.
+A webserver is a Software running on  servers to processes HTTP(S) requests from clients.
 
 A webserver contains:
 - socket:
@@ -25,14 +25,14 @@ A webserver contains:
 - bind:
 	Connects IP adresse with a port.
 	In C the syntax is " int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);".
-	sockfd = socket file descriptor (determine condition from file for the kernel) -> return value from socket-syscall
+	sockfd = socket file descriptor (determine condition from file for the kernel)
 	sockaddr = adress to bind the socket
-	addrlen = lenght of adress in bytes
+	addrlen = lenght of address in bytes
 - listen:
 	Marks socket to accept the incomming connection.
 	In C the syntax is "int listen(int sockfd, int backlog);".
 	sockfd = socket file descriptor
-	backlog = maximun amount of possibile connections
+	backlog = maximun amount of possible connections
 - accept:
 	Accepts a new connection from a client.
 	In C the syntax is "int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);".
@@ -53,9 +53,20 @@ A webserver contains:
 	mode = only for create a file for the description of the file condition
 - read:
 	Reads the content of the file that was opened.
-	Syntax same like before but storage is now used for content of file.
+	Syntax same as before but storage is now used for content of file.
 - write:
+	Sends the content of the file to the client.
+	In C the syntax is "ssize_t write(int fd, const void buf[.count], size_t count);".
+	fd = file descriptor from accept syscall
+	buffer = where write gets data / content
+	count = bytes of content
 - close:
+	Terminates the process / webserver.
+	In C the syntax is "int close(int fd);".
+
+What is missing at my webserver?
+Currently, the webserver processes only one HTTP request and then terminates.
+Future improvements include adding multiprocessing using fork / join to handle multiple requests concurrently.
 
 Somethink about Assembly (x86-64):
 - register seqeunece: rax / rdi / rsi / rdx / r10 / r9 ...

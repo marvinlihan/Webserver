@@ -1,19 +1,19 @@
-.intel_syntax noprefix			# use intel_syntax -> no % or & prafix needed
-.globl _start				# set the linker the starting point (feels like main in other programming languages)
+.intel_syntax noprefix			# use intel syntax -> no % or & prafix needed
+.globl _start				# set the starting point for the linker (feels like main in other programming languages)
 .section .text				# define code section
 _start:
 	mov rax, 41			# syscall number for the socket syscall
 	mov rdi, 2			# domain = AF_INEt for IPv4 adresses
-	mov rsi, 1			# type = SOCK_STREAm for data transfer with tcp
+	mov rsi, 1			# type = SOCK_STREAm for tcp stream communication
 	mov rdx, 0			# protocol = 0 (tcp)
 	syscall				# on sucess return a file descriptor
 
-	mov r12, rax			# bind need socket_fd and because rax is used for syscall for bind we need to safe the fd somewhere else
+	mov r12, rax			# bind need socket_fd and because rax is used for syscall for bind we need to save the fd somewhere else
 
 	mov rax, 49			# syscall number for the bind syscall
 	mov rdi, r12			# socket_fd
 	lea rsi, [sockaddr]		# struct for the adress of the socket
-	mov rdx, 16			# length adress (16 bytes)
+	mov rdx, 16			# length of adress (16 bytes)
 	syscall
 
 	mov rax, 50			# syscall number for the listen syscall
@@ -27,7 +27,7 @@ _start:
 	mov rdx, 0
 	syscall				# on sucess return a file descriptor
 
-	mov r13, rax			# which we need for read because it the file descriptor from accept
+	mov r13, rax			# used for reading/writing the client response
 
 	mov rax, 0			# syscall number for the read syscall -> read http request from client
 	mov rdi, r13			# fd from accept
@@ -49,14 +49,20 @@ _start:
 	mov rdx, 512			# bytes to read
 	syscall
 
-	mov rax, 60			# syscall for exit
-	mov rdi, 0
+	mov rax, 1			# syscall number for the write syscall
+	mov rdi, r13			# fd from client
+	lea rsi, [read_content]		# buffer to write the content
+	mov rdx, 512			# bytes to write (max)
 	syscall
+
+	mov rax, 60                     # syscall for exit
+        mov rdi, 0
+        syscall
 
 .section .data
 sockaddr:
 	.word 2              # AF_INEt
-	.word 0x5000         # Port 80 (htons(80)) in big endian
+	.word 0x901f         # Port 8080 (htons(8080)) in big endian
    	.long 0x00000000     # 0.0.0.0 (INADDR_ANy)
     	.long 0x00000000     # padding
 
